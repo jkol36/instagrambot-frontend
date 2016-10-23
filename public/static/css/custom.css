@@ -1,0 +1,149 @@
+.bookmakers-list,
+.bookmakers-list a {
+  font-size: 2rem;
+}
+
+footer {
+    padding: 15px 30px 10px;
+}
+.terms {
+    padding-top: 25px;
+    text-align: center !important;
+}
+
+.section-main,
+.section-main::after {
+    height: 783px;
+}
+
+.section-main {
+  color: #323b43;
+  padding-top: 15px;
+  position: relative;
+}
+
+/* line 25, ../sass/project-files/_main.scss */
+.section-main::after {
+  content: " ";
+  opacity: 0.12;  
+  background: url(https://unsplash.imgix.net/photo-1418065460487-3e41a6c84dc5?q=75&fm=jpg&s=127f3a3ccf4356b7f79594e05f6c840e) no-repeat center top;
+  background-size: 100% 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -2;  
+}
+
+.section-main .header-dashboard {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    z-index: -1;
+}
+
+.section-main .header-dashboard .dashboard {
+  width: 60%;
+}
+
+@media (max-width: 1281px) {
+    .section-main,
+    .section-main::after {
+        height: 583px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+
+    .section-main,
+    .section-main::after {
+        height: 400px;
+    }
+
+    .section-main .header-dashboard .dashboard {
+        width: 90%;
+    }
+}
+
+.btn-better-bets {
+    font-size: 1.8rem;
+}
+h4.subtitle {
+    margin-bottom: 30px;
+}
+h1.page-title {
+    margin-bottom: 15px;
+}
+
+.section-statistics {
+    padding: 25px 0;
+    background-color: #40637F;
+    color: #fff;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+}
+.section-statistics h1 {
+    margin-top: 0;
+}
+.section-statistics .row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.todays-turnover {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.todays-turnover .value {
+    font-size: 6rem;
+}
+.todays-turnover .text {
+    font-size: 2.8rem;
+}
+
+.total-turnover .value,
+.total-profit .value {
+    font-size: 3.8rem;
+}
+
+.total-turnover .text,
+.total-profit .text {
+    font-size: 2.8rem;
+}
+
+@media only screen and (max-width: 320px) {
+  .total-turnover .text,
+  .total-profit .text {
+    font-size: 1.8rem;
+  }
+
+  .section-statistics h1 {
+    font-size: 2.2rem;
+  }
+}
+
+.team-member img {
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 7px;
+}
+.team-member h3 {
+    text-align: center;
+}
+.team-member h4 {
+    text-align: center;
+    font-size: 1.5rem;
+}
+.team-member div {
+    text-align: left;
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+}
+.team-member i {
+    color: #81d94c;
+    margin-right: 7px;
+}

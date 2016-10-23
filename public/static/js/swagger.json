@@ -1,0 +1,55 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Quickleads",
+        "description": "**This example has a working backend hosted in Heroku**\n"
+    },
+    "host": "quickleads.herokuapp.com",
+    "basePath": "/",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/amit": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "List all email fields",
+                        "schema": {
+                            "title": "Amit Automated Email",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Amit"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Amit": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "delay": {
+                    "type": "string",
+                    "format": "int32"
+                }
+            }
+        }
+    }
+}
