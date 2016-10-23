@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, IndexRedirect} from 'react-router';
 import Dashboard from '../components/Dashboard';
 import TestTransitions from '../components/TestTransitions';
-import App from '../containers/App';
+import App from '../containers/app';
 
 
 

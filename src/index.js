@@ -3,17 +3,14 @@ import ReactDOM from 'react-dom'
 import { useRouterHistory } from 'react-router'
 import { createHistory } from 'history'
 import makeRoutes from './routes'
-import Root from './containers/Root'
-import configureStore from './store'
+import Root from './containers/root'
 
 const history = useRouterHistory(createHistory)({ basename: ''})
-
-const store = configureStore(history)
 
 const routes = makeRoutes(store)
 
 // Render the React application to the DOM
 ReactDOM.render(
-  <Root history={history} routes={routes} store={store} />,
+  <Root history={history} routes={routes} />,
   document.getElementById('root')
 )
