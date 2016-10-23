@@ -32,7 +32,7 @@ export default class Dashboard extends Component {
       }
     })
     firebase.database().ref('igbot').child('hashtags').on('child_added', snap => {
-      if(snap.key === this.state.query){
+      if(snap.key === this.state.query.split('#')[1]){
         this.setState({
           result: snap.val(),
           loading:false,
@@ -40,7 +40,7 @@ export default class Dashboard extends Component {
       }
     })
     firebase.database().ref('igbot').child('hashtags').on('child_changed', snap => {
-      if(snap.key === this.state.query){
+      if(snap.key === this.state.query.split('#')[1]){
         this.setState({
           result: snap.val(),
           loading: false
@@ -58,6 +58,7 @@ export default class Dashboard extends Component {
 
   onSearch() {
     let hashtagKeys = Object.keys(this.state.hashtags)
+    console.log(this.state.query.split('#')[1])
     let hashtagInState = hashtagKeys.indexOf(this.state.query.split('#')[1]) != -1 ? this.state.hashtags[this.state.query.split('#')[1]]: null
     if(hashtagInState) {
       this.setState({
