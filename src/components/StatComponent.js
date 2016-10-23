@@ -1,5 +1,5 @@
 import React from 'react';
-import { Widget } from './widget';
+import { Widget } from './Widget';
 
 export const StatComponent = (props) => {
 	console.log(props)
