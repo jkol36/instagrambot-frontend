@@ -7,7 +7,7 @@ import Root from './containers/root'
 
 const history = useRouterHistory(createHistory)({ basename: ''})
 
-const routes = makeRoutes(store)
+const routes = makeRoutes()
 
 // Render the React application to the DOM
 ReactDOM.render(
