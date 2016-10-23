@@ -26,7 +26,7 @@ class Root extends Component {
 
   render () {
     return (
-      <Provider store={this.props.store}>
+      <Provider>
         <div style={{ height: '100%' }}>
           {this.content}
           {this.devTools}
@@ -37,8 +37,7 @@ class Root extends Component {
 }
 
 Root.propTypes = {
-  history: PropTypes.object.isRequired,
-  store: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired
 }
 
 export default Root
