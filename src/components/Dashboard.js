@@ -64,7 +64,7 @@ export default class Dashboard extends Component {
         result: hashtagInState,
       })
     }
-    firebase.database().ref('igbot').child('work-to-do').push({hashtag:this.state.query.split('#')}, () => console.log('pushed to firebase'))
+    firebase.database().ref('igbot').child('work-to-do').push({hashtag:this.state.query.split('#')[1]}, () => console.log('pushed to firebase'))
   }
 
   onQueryChanged(query) {
