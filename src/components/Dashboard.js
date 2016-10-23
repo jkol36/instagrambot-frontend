@@ -58,7 +58,7 @@ export default class Dashboard extends Component {
 
   onSearch() {
     let hashtagKeys = Object.keys(this.state.hashtags)
-    let hashtagInState = hashtagKeys.indexOf(this.state.query) != -1 ? this.state.hashtags[this.state.query]: null
+    let hashtagInState = hashtagKeys.indexOf(this.state.query.split('#')[1]) != -1 ? this.state.hashtags[this.state.query.split('#')[1]]: null
     if(hashtagInState) {
       this.setState({
         result: hashtagInState,
