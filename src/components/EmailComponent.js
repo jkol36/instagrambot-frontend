@@ -13,6 +13,7 @@ export const EmailComponent = (props) => {
 		})
 	}
 	emails.sort((a, b) => a.createdAt > b.createdAt)
+	emails = emails.slice(0, 10)
 	if(!props.result) {
 		return (
 			<table className='table table-striped'> 
