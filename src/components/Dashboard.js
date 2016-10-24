@@ -32,7 +32,7 @@ export default class Dashboard extends Component {
       }
     })
     firebase.database().ref('igbot').child('hashtags').on('child_added', snap => {
-      if(snap.key === this.state.query.split('#')[1]){
+      if(snap.key === this.state.query.split('#')[1] || snap.key === this.state.query){
         this.setState({
           result: snap.val(),
           loading:false,
@@ -40,7 +40,7 @@ export default class Dashboard extends Component {
       }
     })
     firebase.database().ref('igbot').child('hashtags').on('child_changed', snap => {
-      if(snap.key === this.state.query.split('#')[1]){
+      if(snap.key === this.state.query.split('#')[1] || snap.key === this.state.query){
         this.setState({
           result: snap.val(),
           loading: false
@@ -59,13 +59,17 @@ export default class Dashboard extends Component {
   onSearch() {
     let hashtagKeys = Object.keys(this.state.hashtags)
     console.log(this.state.query.split('#')[1])
-    let hashtagInState = hashtagKeys.indexOf(this.state.query.split('#')[1]) != -1 ? this.state.hashtags[this.state.query.split('#')[1]]: null
+    let query
+    let hashtagInState
+    query = this.state.query.split('#')[1] === undefined ? this.state.query: this.state.query.split('#')[1]
+    hashtagInState = hashtagKeys.indexOf(this.state.query.split('#')[1]) != -1 ? this.state.hashtags[this.state.query.split('#')[1]]: null
+    hashtagInState = hashtagKeys.indexOf(this.state.query) != -1 ? this.state.hashtags[this.state.query]: null
     if(hashtagInState) {
       this.setState({
         result: hashtagInState,
       })
     }
-    firebase.database().ref('igbot').child('work-to-do').push({hashtag:this.state.query.split('#')[1]}, () => console.log('pushed to firebase'))
+    firebase.database().ref('igbot').child('work-to-do').push({hashtag:query}, () => console.log('pushed to firebase'))
   }
 
   onQueryChanged(query) {
