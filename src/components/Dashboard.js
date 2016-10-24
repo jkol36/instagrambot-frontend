@@ -101,6 +101,7 @@ export default class Dashboard extends Component {
             </div>
             <div className='row'>
               <div className='col-md-12'>
+                <h4 className='text-muted'> Only displaying the last 10 emails </h4>
                 <EmailComponent result = { this.state.result } />
               </div>
             </div>
