@@ -1,7 +1,9 @@
-import auth from './auth'
-import apikeys from './apikeys'
+import {hashtags}  from './hashtags'
+import {influencers} from './influencers'
+import {work} from './work'
 
 export default {
-  auth,
-  apikeys
+  hashtags,
+  influencers,
+  work
 }

@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "babel-preset-stage-0": "^6.3.13",
+    "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "bluebird": "^3.3.5",
     "braintree-react": "^3.0.1",
     "braintree-web": "^2.23.0",

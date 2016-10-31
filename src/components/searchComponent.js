@@ -4,9 +4,13 @@ import React from 'react';
 export const SearchComponent = (props) => {
 
 	return (
-		<div className='input-group'>
-			<input type='text' className='form-control' placeholder='#startups' onChange={(e) => props.onQueryChanged(e.target.value)}></input>
-			<span className='input-group-addon btn btn-success' onClick={props.onSearch}>Search</span>
-		</div>
+	  <form className='form-inline row'>
+	    <div className="form-group">
+	      <div className='input-group'>
+	       	<input className="form-control" onChange={props.onQueryChanged} id='search' placeholder={props.slug}/>
+	      </div>
+	      <button className='btn btn-outline-primary' onClick={props.onSearch}> Search </button>
+	    </div>
+	  </form>
 	)
 }
