@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Navbar } from 'components/navbar'
+import { Navbar } from '../components/navbar'
 import 'css/app.less'
 
 class App extends Component {
