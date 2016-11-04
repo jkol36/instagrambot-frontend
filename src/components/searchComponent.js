@@ -10,6 +10,7 @@ export default class SearchContainer extends Component {
 		super(props)
 	}
 	render() {
+		console.log('hello')
 		return (
 		  <form className='form-inline row'>
 		    <div className="form-group search-bar-wrapper">
