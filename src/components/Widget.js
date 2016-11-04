@@ -7,9 +7,9 @@ export const Widget = (props) => (
   		<div className='section-info'> 
   			<h3 className='info-title'> {props.title} </h3>
   			<div className='info-block'> 
-  				{props.stats.map((stat) => {
+  				{props.stats.map((stat, index) => {
   					return (
-  						<div className='row'>
+  						<div className='row' key={index}>
 	  						<h3 className='stat-description col-md-6'>{stat.description} </h3>
 	  						<h3 className='stat-number col-md-6'>{stat.number} </h3>
 	  					</div>

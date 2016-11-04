@@ -1,9 +1,5 @@
-import {hashtags}  from './hashtags'
-import {influencers} from './influencers'
-import {work} from './work'
+import { userSession } from './user'
 
 export default {
-  hashtags,
-  influencers,
-  work
+  userSession
 }

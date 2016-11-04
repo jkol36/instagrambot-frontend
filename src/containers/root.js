@@ -7,7 +7,7 @@ class Root extends Component {
 
   get content () {
     return (
-      <Router history={this.props.history}>
+      <Router history={this.props.history} store={this.props.store}>
         { this.props.routes }
       </Router>
     )

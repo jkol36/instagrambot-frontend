@@ -1,13 +1,14 @@
-import firebase from 'firebase'
+import 'css/pagination.less'
+import Pagination from 'react-js-pagination'
+import { queryRef, hashtagRef, influencerRef } from 'config'
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { getInitialHashtags, listenForHashtagChanges } from 'actions/hashtags'
-import { getInitialInfluencers, listenForInfluencerChanges } from 'actions/influencers'
-import { addWork } from 'actions/work'
-import { Widget } from './Widget'
-import { SearchComponent }  from './searchComponent';
+import { Widget } from './Widget';
+import { createUserSession } from 'actions/user'
+//import { listenForQueryResults } from 'actions/queryResults'
+import SearchContainer  from './SearchComponent';
 //import { StatComponent } from './StatComponent';
-//import { EmailComponent } from './EmailComponent';
+import { EmailComponent } from './EmailComponent';
 
 //import ExportComponent  from './ExportComponent';
 
@@ -15,100 +16,102 @@ class Dashboard extends Component {
 
   constructor(props) {
     super(props)
+    console.log(props)
     this.state = {
-      loading: false,
-      message: null,
       query: '',
+      lastQuery: null,
       result: {},
+      sessionId: null,
+      queryId: null,
       queryType: null,
-      placeholderText: null
+      placeholderText: null,
+      activePage: 1,
+      itemsCountPerPage: 5
     }
     this.onSearch = this.onSearch.bind(this);
-    this.removeMessage = this.removeMessage.bind(this);
     this.onQueryChanged = this.onQueryChanged.bind(this);
-    this.setMessage = this.setMessage.bind(this);
+    this.changePage = this.changePage.bind(this)
 
   }
-
-
   componentDidMount() {
     const { dispatch } = this.props
-    dispatch(getInitialHashtags())
-    dispatch(getInitialInfluencers())
-    dispatch(listenForHashtagChanges())
-    dispatch(listenForInfluencerChanges())
-    
-  }
-
-  removeMessage() {
-    this.setState({
-      message: ''
+    dispatch(createUserSession())
+    .then(sessionId => {
+      this.setState({
+        sessionId
+      })
     })
   }
-  setMessage(message) {
-    this.setState({
-      message
+  onSearch(query) {
+    console.log('on search called', query)
+    const { queryType } = this.state
+    let newQuery = queryRef.push()
+    newQuery.set({
+      query: {
+        type: queryType,
+        query,
+        id: newQuery.key,
+        sessionId: this.state.sessionId,
+        status: 'needs love'
+      }
     })
-  }
-
-  onSearch(e) {
-    console.log(this.state)
-    const {dispatch} = this.props
-    e.preventDefault();
-    if(this.state.queryType === 'influencer') {
-      console.log('true')
-      let query
-      let influencerInState
-      query = this.state.query.split('#')[1] === undefined ? this.state.query: this.state.query.split('#')[1]
-      influencerInState = this.props.influencers[query] ? this.props.influencers[query]: null
-      if(influencerInState) {
-        this.setState({
-          result: influencerInState,
-        })
-      }
-      dispatch(addWork({type:'influencers', query}))
-      firebase.database().ref('igbot').child('influencers').on('child_changed', s => {
-      if(s.key === this.state.query) {
-          this.setState({
-            result: s.val()
-          })
-        }
-      })
-    }
-    else if(this.state.queryType === 'hashtag') {
-      console.log('true')
-      let query
-      let hashtagInState
-      console.log('query', this.state.query)
-      query = this.state.query.split('#')[1] === undefined ? this.state.query: this.state.query.split('#')[1]
-      console.log('yooo',this.props.hashtags[query])
-      hashtagInState = this.props.hashtags[query] ? this.props.hashtags[query]: null
-      dispatch(addWork({type:'hashtags', query}))
-      firebase.database().ref('igbot').child('hashtags').on('child_changed', s => {
-        if(s.key === this.state.query) {
-          this.setState({
-            result: s.val()
-          })
-        }
-      })
-      if(hashtagInState) {
-        this.setState({
-          result: hashtagInState,
-        })
-      }
-    }
-  }
-
-  onQueryChanged(e) {
-    if(this.state.query.length === 0 || this.state.query.length === 1) {
-      this.setState({result:{}, query:null})
-    }
     this.setState({
-      query: e.target.value
+      queryId: newQuery.key
+    })
+    switch(queryType) {
+      case 'influencer':
+        influencerRef.child(newQuery.key).on('child_changed', snap => {
+          this.setState({
+            result: Object.assign({}, this.state.result, {[snap.key]:snap.val()})
+          })
+        })
+      case 'hashtag':
+        hashtagRef.child(newQuery.key).on('child_added', snap => {
+          this.setState({
+            result: Object.assign({}, this.state.result, {[snap.key]: snap.val()})
+          })
+        })
+        hashtagRef.child(newQuery.key).on('child_changed', snap => {
+          this.setState({
+            result: Object.assign({}, this.state.result, {[snap.key]: snap.val()})
+          })
+        })
+    }
+
+  }
+
+  onQueryChanged(input) {
+    console.log(input)
+    if(input.length === 0 && this.state.queryId || input.length === 1 && this.state.queryId) {
+      switch(this.state.queryType) {
+        case 'influencer':
+          influencerRef.child(this.state.queryId).off()
+        case 'hashtag':
+          hashtagRef.child(this.state.queryId).off()
+      }
+      this.setState({
+        result: {},
+        queryId: null,
+        queryType: null,
+      })
+    }
+  }
+
+  changePage(pageNumber) {
+    console.log('changePage called', pageNumber)
+    this.setState({
+      activePage: pageNumber
     })
   }
 
   render() {
+    let emailCount = 0
+    this.state.result.emails ? Object.keys(this.state.result.emails).map(k => {
+      if(this.state.result.emails[k]) {
+        emailCount +=1
+      }
+    }):null
+
     return (
       <div>
         <div className='jumbotron row'>
@@ -130,7 +133,7 @@ class Dashboard extends Component {
             })} className='btn btn-warning'> Influencer</button> 
           </span></p>
             {this.state.queryType ? 
-              <SearchComponent slug={this.state.slug} onSearch={this.onSearch} onQueryChanged={this.onQueryChanged} placeholder={this.state.placeholderText} />: null
+              <SearchContainer slug={this.state.slug} onQueryChanged={this.onQueryChanged} onSearch={this.onSearch} />: null
             }
         </div>
         <div className='row stats'>
@@ -145,6 +148,17 @@ class Dashboard extends Component {
             <Widget stats={[{description:'Bot is currently', number:this.state.result.status}]} title={'Query Status For ' +this.state.query}/>
           </div>
         </div> 
+        <div className='row table'> 
+          <EmailComponent result={this.state.result} activePage={this.state.activePage} itemCountPerPage={this.state.itemsCountPerPage} />
+          <Pagination
+          activeClass='active' 
+          activePage={this.state.activePage} 
+          itemsCountPerPage={10} 
+          totalItemsCount={emailCount} 
+          pageRangeDisplayed={5}
+          onChange={this.changePage}
+          />
+        </div>
       </div>
 
     )
@@ -153,8 +167,8 @@ class Dashboard extends Component {
 
 export default connect(state => {
   return {
-    hashtags: state.hashtags,
-    influencers: state.influencers
+    userSession: state.userSession
   }
 })(Dashboard)
+
 
