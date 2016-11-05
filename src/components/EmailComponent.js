@@ -7,7 +7,7 @@ export const EmailComponent = (props) => {
 		let email = props.result.emails[k]
 		emails.push(email)
 	}):null
-	emails.slice(0,10)
+	console.log(Math.floor(props.activePage*props.itemCountForPage/2))
 	if(!props.result.emails) {
 		return (
 			<table className='table table-striped'> 
@@ -50,7 +50,7 @@ export const EmailComponent = (props) => {
 							</th>
 						</tr>
 					</thead> 
-					{emailNodes}
+					{emailNodes.slice(Math.floor(props.itemCountForPage*props.activetPage),props.activePage*props.itemCountForPage)}
 				</table>
 				
 			</div>
