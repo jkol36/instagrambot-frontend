@@ -12,6 +12,8 @@ export const EmailComponent = (props) => {
 			<table className='table table-striped'> 
 				<thead className='thead-inverse'> 
 					<tr>
+						<th> Profile Pic </th>
+
 						<th> 
 							Username
 						</th>
@@ -25,14 +27,18 @@ export const EmailComponent = (props) => {
 	}
 	else {
 		let emailNodes = emails.length > 0 ? emails.map((email, index) => {
-			console.log(email)
 			return (
 				<tbody key={index}>
 					<tr> 
 						<td> 
+							<img src={email.metaData.user.profile_pic_url}></img>
+						</td>
+						<td> 
 							{email.username}
 						</td>
 						<td> {email.email} </td>
+						<td> {email.metaData.user.followed_by.count} </td>
+						<td> {email.metaData.user.full_name} </td>
 					</tr>
 				</tbody>
 			)
@@ -43,10 +49,19 @@ export const EmailComponent = (props) => {
 					<thead className='thead-inverse'> 
 						<tr>
 							<th> 
+							Profile Pic
+							</th>
+							<th> 
 								Username
 							</th>
 							<th>
 								Email
+							</th>
+							<th> 
+							followers
+							</th>
+							<th> 
+							full Name
 							</th>
 						</tr>
 					</thead> 
