@@ -5,12 +5,15 @@
   width: 50%;
   margin: 0 auto;
   padding-top: 39px;
+  background-color:#a8d0db;
+  margin-bottom:10rem;
 }
 
 .widget {
   background: white;
   border-radius: 5px;
   box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+  height:10rem;
 }
 
 .section:first-child {
