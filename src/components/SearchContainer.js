@@ -1,32 +1,28 @@
 import firebase from 'firebase'
+import { connect } from 'react-redux'
 import React, { Component } from 'react';
 import SearchBar from './SearchBar'
+import { queryAdded, listenForQueryResults } from 'actions/queries'
 import '../css/searchbar.css'
 
 
-export default class SearchContainer extends Component {
+class SearchContainer extends Component {
 	constructor(props) {
 		super(props)
 		this.onChange = this.onChange.bind(this)
     this.clearSuggestions = this.clearSuggestions.bind(this)
     this.onSelectedSuggestion = this.onSelectedSuggestion.bind(this)
+    this.onSearch = this.onSearch.bind(this)
 		this.state = {
 			suggestions: [],
       query: '',
-      selectedSuggesstion: null
+      selectedSuggesstion: null,
+      suggestionResultRef:null,
 		}
 	}
 	onChange(e) {
-    if(e.target.value.length === 0 && this.state.queryId || e.target.value.length === 1 && this.state.queryId) {
-      switch(this.state.queryType) {
-        case 'influencer':
-          influencerRef.child(this.state.queryId).off()
-        case 'hashtag':
-          hashtagRef.child(this.state.queryId).off()
-      }
-      
-    }
-    else if(e.target.value.length === 0) {
+    if(e.target.value.length === 0) {
+      this.state.suggestionResultRef.off()
       this.setState({
         suggestions: [],
         query: e.target.value
@@ -38,7 +34,12 @@ export default class SearchContainer extends Component {
       let query = e.target.value.trim()
       let ref = firebase.database().ref('igbot/querySuggestions').push()
       ref.set({query, postRef:`${ref.key}/results`}, () => {
-        firebase.database().ref(`igbot/querySuggestionResults/${ref.key}/results`).on('child_added', s => {
+        let suggestionResultRef = firebase.database().ref(`igbot/querySuggestionResults/${ref.key}/results`)
+        this.setState({
+          suggestionResultRef
+        })
+        suggestionResultRef
+        .on('child_added', s => {
           users.push(s.val().user)
           this.setState({
             suggestions:users.slice(0,5)
@@ -48,6 +49,7 @@ export default class SearchContainer extends Component {
     }
 	}
   clearSuggestions() {
+    this.state.suggestionResultRef.off()
     this.setState({
       suggestions:[]
     })
@@ -59,6 +61,16 @@ export default class SearchContainer extends Component {
       query: name,
       selectedSuggestion: name
     })
+  }
+
+  onSearch(query) {
+    console.log('on search called with', query)
+    let { queryType } = this.props
+    this.clearSuggestions()
+    const { dispatch } = this.props
+    dispatch(queryAdded(query, queryType, this.props.userSession))
+    .then(queryId => dispatch(listenForQueryResults(queryId, queryType)))
+    
   }
 
 
@@ -75,7 +87,7 @@ export default class SearchContainer extends Component {
             clearSuggestions={this.clearSuggestions}
             onSelectedSuggestion={this.onSelectedSuggestion} 
             placeholder={this.props.placeholder}
-            onSearch={() => this.props.onSearch(this.state.query)}
+            onSearch={() => this.onSearch(this.state.query)}
             />
 		      </div>
 		    </div>
@@ -83,3 +95,5 @@ export default class SearchContainer extends Component {
 		)
 	}
 }
+
+export default connect(state => state)(SearchContainer)

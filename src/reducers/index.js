@@ -1,12 +1,8 @@
 import { userSession } from './user'
-import { emailsFound, emails } from './emails'
-import { profilesParsed, followersCount, followersParsed } from './profiles'
+import { queries, queryResults } from './queries'
 
 export default {
   userSession,
-  emailsFound,
-  emails,
-  profilesParsed,
-  followersCount,
-  followersParsed
+  queries,
+  queryResults
 }

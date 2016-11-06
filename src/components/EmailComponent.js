@@ -7,7 +7,6 @@ export const EmailComponent = (props) => {
 		let email = props.result.emails[k]
 		emails.push(email)
 	}):null
-	console.log(Math.floor(props.activePage*props.itemCountForPage/2))
 	if(!props.result.emails) {
 		return (
 			<table className='table table-striped'> 
@@ -26,6 +25,7 @@ export const EmailComponent = (props) => {
 	}
 	else {
 		let emailNodes = emails.length > 0 ? emails.map((email, index) => {
+			console.log(email)
 			return (
 				<tbody key={index}>
 					<tr> 
@@ -50,7 +50,7 @@ export const EmailComponent = (props) => {
 							</th>
 						</tr>
 					</thead> 
-					{emailNodes.slice(Math.floor(props.itemCountForPage*props.activetPage),props.activePage*props.itemCountForPage)}
+					{emailNodes.slice(0,10)}
 				</table>
 				
 			</div>

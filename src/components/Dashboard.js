@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { queryRef, hashtagRef, influencerRef } from 'config'
 import { Widget } from './Widget';
 import { createUserSession } from 'actions/user'
 import SearchContainer  from './SearchContainer';
@@ -11,60 +10,22 @@ class Dashboard extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      queryType: null
+      queryType: null,
     }
-    this.onSearch = this.onSearch.bind(this)
-
   }
   componentDidMount() {
     const { dispatch } = this.props
     dispatch(createUserSession())
-    .then(sessionId => {
-      this.setState({
-        sessionId
-      })
-    })
+    setInterval(() => this.forceUpdate(), 1000)
   }
-  onSearch(query) {
-    console.log('on search called with', query)
-    return
-    let { queryType } = this.state
-    let newQueryRef = queryRef.push()
-    newQueryRef.set({
-      query: {
-        type: queryType,
-        query,
-        id: newQueryRef.key,
-        sessionId: this.state.sessionId,
-        status: 'needs love'
-      }
-    })
-    this.setState({
-      queryId: newQueryRef.key
-    })
-    switch(queryType) {
-      case 'influencer':
-        influencerRef.child(newQueryRef.key).on('child_changed', snap => {
-          this.setState({
-            result: Object.assign({}, this.state.result, {[snap.key]:snap.val()})
-          })
-        })
-      case 'hashtag':
-        hashtagRef.child(newQueryRef.key).on('child_added', snap => {
-          this.setState({
-            result: Object.assign({}, this.state.result, {[snap.key]: snap.val()})
-          })
-        })
-        hashtagRef.child(newQueryRef.key).on('child_changed', snap => {
-          this.setState({
-            result: Object.assign({}, this.state.result, {[snap.key]: snap.val()})
-          })
-        })
-    }
-  }
-  
 
   render() {
+    let result = null
+    let query = 'nothing'
+    if(Object.keys(this.props.queryResults).map(k => this.props.queryResults[k])[0]) {
+      result = Object.keys(this.props.queryResults).map(k => this.props.queryResults[k])[0]
+      query = result.hashtag.query
+    }
     return (
       <div>
         <div className='jumbotron row'>
@@ -94,17 +55,17 @@ class Dashboard extends Component {
         <div className='row stats'>
           <div className='col-md-4'> 
             <Widget stats={[
-              {description:'profiles searched', number:this.props.profilesParsed ? this.props.profilesParsed: this.props.followersParsed}, 
-              {description: 'emails found', number:this.props.emailsFound},
-              this.props.followersCount ? {description: 'Follower Count', number: this.props.followersCount.count}:{}
-              ]} title='Result Summary'/>
+              {description:'profiles searched', number:result ? result.profilesParsed: 0}, 
+              {description: 'emails found', number:result ? result.emails_found: 0},
+              this.props.followersCount ? {description: 'Follower Count', number:0}:{}
+              ]} title='result Summary'/>
           </div>
           <div className='col-md-4'>
-            <Widget stats={[{description:'Bot is currently', number:this.props.status}]} title={'Query Status For ' +this.state.query}/>
+            <Widget stats={[{description:'Bot is currently', number:result ? result.status: 'not running'}]} title={'Query Status For ' + query}/>
           </div>
         </div> 
         <div className='row table'> 
-          <EmailComponent result={this.props.emails} activePage={this.state.activePage} itemCountPerPage={this.state.itemsCountPerPage} />
+          <EmailComponent result={result ? result: {}} activePage={this.state.activePage} itemCountPerPage={this.state.itemsCountPerPage} />
           
         </div>
       </div>
@@ -116,11 +77,8 @@ class Dashboard extends Component {
 export default connect(state => {
   return {
     userSession: state.userSession,
-    profilesParsed: state.profilesParsed,
-    emailsFound: state.emailsFound,
-    emails: state.emails,
-    followersCount: state.followersCount,
-    followersParsed: state.followersParsed
+    query: state.queries,
+    queryResults: state.queryResults,
   }
 })(Dashboard)
 
