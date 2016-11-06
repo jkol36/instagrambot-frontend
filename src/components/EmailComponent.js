@@ -61,7 +61,7 @@ export const EmailComponent = (props) => {
 							followers
 							</th>
 							<th> 
-							full Name
+							full Names
 							</th>
 						</tr>
 					</thead> 
