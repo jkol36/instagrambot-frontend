@@ -94,6 +94,8 @@ input {
 }
 
 .search-bar-suggestions li {
+  font-family:raleway;
+  color:#349273;
   cursor: default;
   letter-spacing: 0.03em;
   padding: 12px 7px 12px 10px;

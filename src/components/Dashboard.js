@@ -64,10 +64,7 @@ class Dashboard extends Component {
             <Widget stats={[{description:'Bot is currently', number:result ? result.status: 'not running'}]} title={'Query Status For ' + query}/>
           </div>
         </div> 
-        <div className='row table'> 
-          <EmailComponent result={result ? result: {}} activePage={this.state.activePage} itemCountPerPage={this.state.itemsCountPerPage} />
-          
-        </div>
+        <EmailComponent result={result ? result: {}} activePage={this.state.activePage} itemCountPerPage={this.state.itemsCountPerPage} />
       </div>
 
     )

@@ -1,4 +1,5 @@
 import React from 'react';
+import 'css/table.less'
 
 
 export const EmailComponent = (props) => {
@@ -9,20 +10,21 @@ export const EmailComponent = (props) => {
 	}):null
 	if(!props.result.emails) {
 		return (
-			<table className='table table-striped'> 
-				<thead className='thead-inverse'> 
-					<tr>
-						<th> Profile Pic </th>
-
-						<th> 
-							Username
-						</th>
-						<th>
-							Email
-						</th>
-					</tr>
-				</thead> 
-			</table>
+			<div className='table-responsive-vertical shadow-z-1'>
+				<table id='table' className='table table-hover table-mc-light-blue'> 
+					<thead> 
+						<tr>
+							<th> Profile Pic </th>
+							<th> 
+								Username
+							</th>
+							<th>
+								Email
+							</th>
+						</tr>
+					</thead> 
+				</table>
+			</div>
 		)
 	}
 	else {
@@ -44,9 +46,9 @@ export const EmailComponent = (props) => {
 			)
 		}):[]
 		return (
-			<div>
-				<table className='table table-striped'> 
-					<thead className='thead-inverse'> 
+			<div className='table-responsive-vertical shadow-z-1'>
+				<table className='table table-hover table-mc-light-blue'> 
+					<thead> 
 						<tr>
 							<th> 
 							Profile Pic

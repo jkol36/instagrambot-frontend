@@ -1,15 +1,22 @@
 import React from 'react';
+import 'css/materialDesign.css'
 export const Navbar = (props) => {
 	return (
-		<nav>
-		  <ul className='nav nav-pills float-xs-right'> 
-		  	{props.navLinks.map((link, index) => {
+		<nav id='nav' className='nav'>
+			<div className='default-nav'> 
+				<div className='main-nav'> 
+					<div className='toggle'/>
+					<div className='main-nav-item'> 
+						<img id='logo' src="/static/img/logo.png" className="main-nav-item-link" alt=""/>
+					</div>
+					{props.navLinks.map((link, index) => {
 		  		return (
-		  			<li className='nav-item' key={index}> 
-		  				<a className='nav-link'href={link.href}>{link.text}</a> 
-		  			</li>)
+		  			<div className='main-nav-item' key={index}> 
+		  				<a className='main-nav-item-link'href={link.href}>{link.text}</a> 
+		  			</div>)
 		  	})}
-		  </ul>
+				</div>
+			</div>
 		</nav>
 	)
 }
