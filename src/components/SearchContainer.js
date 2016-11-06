@@ -30,19 +30,19 @@ class SearchContainer extends Component {
     }
     else {
       this.setState({query:e.target.value})
-      let users = []
+      let results = []
       let query = e.target.value.trim()
       let ref = firebase.database().ref('igbot/querySuggestions').push()
-      ref.set({query, postRef:`${ref.key}/results`}, () => {
+      ref.set({query, queryType:this.props.queryType, postRef:`${ref.key}/results`}, () => {
         let suggestionResultRef = firebase.database().ref(`igbot/querySuggestionResults/${ref.key}/results`)
         this.setState({
           suggestionResultRef
         })
         suggestionResultRef
         .on('child_added', s => {
-          users.push(s.val().user)
+          results.push(s.val())
           this.setState({
-            suggestions:users.slice(0,5)
+            suggestions:results.slice(0,5)
           })
         })
       })
@@ -82,6 +82,7 @@ class SearchContainer extends Component {
 		       	<SearchBar 
             value={this.state.query} 
             suggestions={this.state.suggestions}
+            queryType={this.props.queryType}
             selectedSuggestion={this.state.selectedSuggestion} 
             onChange={this.onChange} 
             clearSuggestions={this.clearSuggestions}

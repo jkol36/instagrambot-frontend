@@ -17,6 +17,7 @@ const SearchBar = (props) => {
 				<input onClick={props.onSearch} className='icon search-bar-submit'/>
 			</div>
 			<SuggestionComponent 
+			queryType={props.queryType}
 			selectedSuggestion={props.selectedSuggestion}
 			onSelectedSuggestion={props.onSelectedSuggestion}
 			suggestions={props.suggestions}/>
