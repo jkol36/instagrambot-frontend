@@ -20,6 +20,8 @@ export const EmailComponent = (props) => {
 						<th>
 							Email
 						</th>
+						<th> Followers </th>
+						<th> Full Name </th>
 					</tr>
 				</thead> 
 			</table>
@@ -61,7 +63,7 @@ export const EmailComponent = (props) => {
 							followers
 							</th>
 							<th> 
-							full Names
+							full Name
 							</th>
 						</tr>
 					</thead> 
