@@ -1,22 +1,23 @@
-import React from 'react';
-import '../css/widget.less';
+import React, {PropTypes} from 'react';
+import 'css/widget.less'
 
-export const Widget = (props) => (
-  <div className='widget-container'>
-  	<div className='widget'> 
-  		<div className='section-info'> 
-  			<h3 className='info-title'> {props.title} </h3>
-  			<div className='info-block'> 
-  				{props.stats.map((stat, index) => {
-  					return (
-  						<div className='row' key={index}>
-	  						<h3 className='stat-description col-md-6'>{stat.description} </h3>
-	  						<h3 className='stat-number col-md-6'>{stat.number} </h3>
-	  					</div>
-  					)
-  				})}
-  			</div>
-  		</div>
-  	</div> 
+const Widget = (props) => (
+  <div className='card'> 
+    {props.children}
+    <div className='card card-block'>
+      <h4 className='card-title'> {props.title} </h4>
+      {props.texts.map(text => {
+        return <p className='card-text'> <span className='label'>{text.label}</span>: <span className='value'>{text.value}</span></p>
+      })}
+    </div>
   </div>
 )
+
+Widget.propTypes = {
+  title: PropTypes.element,
+  texts: PropTypes.array,
+  label: PropTypes.string,
+  value: PropTypes.string
+}
+
+export default Widget

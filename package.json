@@ -76,7 +76,7 @@
     "react-select": "^1.0.0-beta9",
     "react-tabs": "^0.5.3",
     "react-toggle": "^2.0.1",
-    "react-tooltip": "^1.1.2",
+    "react-tooltip": "^1.2.1",
     "redux": "^3.2.1",
     "redux-devtools": "^3.1.0",
     "redux-devtools-dock-monitor": "^1.0.1",

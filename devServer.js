@@ -9,6 +9,8 @@ var compiler = webpack(config);
 app.use(require('webpack-dev-middleware')(compiler, {
   noInfo: true,
   publicPath: config.output.publicPath,
+  inline:true,
+  hot:true,
   stats: {
     chunkModules: false,
     colors: true
@@ -19,9 +21,16 @@ app.use(require('webpack-hot-middleware')(compiler));
 
 app.use('/static', express.static(path.join(__dirname, 'public/static')))
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public/app.html'))
+app.get('/landing', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public/landing.html'))
 })
+app.get('/signin', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public/signin.html'))
+})
+app.get('/signup', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public/signin.html'))
+})
+
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, 'public/app.html'));
 });

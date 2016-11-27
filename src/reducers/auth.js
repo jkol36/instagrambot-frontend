@@ -1,49 +1,56 @@
-import {
-  SIGNUP_ERROR, SIGNUP_REQUEST, SIGNUP_SUCCESS,
-  LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST,
-  USER_UPDATED, LOGGED_OUT,
-} from 'actions/auth'
+import * as C from 'constants'
 
-function auth(state = {
-  user: {},
-  error: null,
+const initialState = {
+  uid: null,
+  user: null,
   loading: false,
-}, action) {
+  error: null
+}
+
+export const auth = (state=initialState, action) => {
   switch(action.type) {
-    case SIGNUP_REQUEST:
-    case LOGIN_REQUEST:
-      return Object.assign({}, state, {
-        user: {},
-        error: null,
-        loading: true
-      })
-    case SIGNUP_ERROR:
-    case LOGIN_ERROR:
-      return Object.assign({}, state, {
-        user: {},
-        error: action.error,
-        loading: false
-      })
-    case LOGIN_SUCCESS:
-    case SIGNUP_SUCCESS:
-      return Object.assign({}, state, {
-        error: null,
-        loading: false
-      })
-    case USER_UPDATED:
-      return Object.assign({}, state, {
-        user: Object.assign({}, state.user, action.user)
-      })
-    case LOGGED_OUT:
+    case C.LOGIN_REQUEST:
       return {
-        user: {},
-        error: null,
-        loading: false
+        ...state,
+        loading: true
       }
-    
+    case C.LOGIN_SUCCESS:
+      return {
+        ...initialState,
+        uid: action.uid
+      }
+    case C.LOGIN_ERROR:
+      return {
+        ...initialState,
+        error: action.error
+      }
+    case C.INITIAL_USER:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        user: user(state.user, action)
+      }
+    case C.USER_CHANGED:
+      return {
+        ...state,
+        user: user(state.user, action)
+      }
     default:
       return state
   }
 }
 
-export default auth
+const user = (state=null, action) => {
+  switch(action.type) {
+    case C.INITIAL_USER:
+      return { ...action.user }
+    case C.USER_CHANGED:
+      const newState = { ...state }
+      newstate[key] = action.value
+      return newState
+    default:
+      return state
+  }
+}
+

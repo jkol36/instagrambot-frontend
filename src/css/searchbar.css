@@ -6,21 +6,72 @@ input {
   font-size: 110%;
   outline: 0;
 }
-
-.search-bar-wrapper {
+.searchbar-container {
   width: 100%;
 }
+/* change the width of the searchbar for different screen sizes it should scale. All child elements should inherit this width*/
+@media (min-width: 1000px) and (max-width: 1500px) {
+  .landing.searchbar-container {
+    margin-top:-13rem;
+  }
+}
+@media (min-width: 100px) and (max-width:768px){
+  .landing.searchbar-container {
+    margin-top:2rem;
+  }
+}
 
-@media screen and (min-width: 640px) {
+@media (min-width:1024px) and (max-width: 1500px) {
+  .landing.searchbar-container {
+    margin-top: -6rem;
+  }
+}
+
+@media (min-width:1366px) and (max-width: 1500px) {
+  .landing.searchbar-container {
+    margin-top: -14rem;
+  }
+}
+@media (min-width:1280px) and (max-width: 1500px) {
+  .landing.searchbar-container {
+    margin-top: -14rem;
+  }
+}
+@media (min-width:1680px) and (max-width: 2000px) {
+  .landing.searchbar-container {
+    margin-top: -14rem;
+  }
+}
+.searchbar-container > .form-inline  {
+  width:inherit;
+  margin:0;
+  padding:0;
+}
+.searchbar-container > .form-inline > .form-group {
+  width:inherit;
+  margin:0;
+  padding:0;
+}
+.searchbar-container > .form-inline > .form-group > .input-group {
+  width:inherit;
+  margin:0;
+  padding:0;
+}
+
+/*@media (min-width: 768px) and (max-width:1000px) {
   .search-bar-wrapper {
     min-width: 480px;
-    width: 40%;
+    width:100%;
+  }
+  #searchbar-row {
+    margin-top:-1rem !important;
   }
 }
 
 .search-bar-field {
   position: relative;
 }
+*/
 
 .search-bar-input {
   -webkit-appearance: none;
@@ -57,6 +108,7 @@ input {
   background-size: 25%;
   right: 40px;
   width: 40px;
+  height: 36px;
 }
 
 .search-bar-submit {
@@ -68,6 +120,7 @@ input {
   padding: 0 20px;
   opacity: .8;
   width: 40px;
+  height:36px;
 }
 
 .search-bar-submit:hover {

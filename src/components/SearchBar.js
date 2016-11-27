@@ -13,8 +13,8 @@ const SearchBar = (props) => {
 					placeholder={props.placeholder}
 					onChange={props.onChange}
 				/>
-				{props.suggestions.length > 0 ? <span className='icon search-bar-clear' onClick={props.clearSuggestions}/>:''}
-				<input onClick={props.onSearch} className='icon search-bar-submit'/>
+				{props.suggestions.length > 0 ? <span className='icon search-bar-clear' onClick={props.clearSuggestions} />:''}
+				<input onClick={props.onSearch} data-toggle='modal' data-target='#resultModal' className='icon search-bar-submit'/>
 			</div>
 			<SuggestionComponent 
 			queryType={props.queryType}

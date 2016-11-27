@@ -1,8 +1,25 @@
-import { userSession } from './user'
-import { queries, queryResults } from './queries'
+import { anonymousUserSession } from './anonymousUser'
+import { 
+	queries, 
+	queryResults,
+	querySuggestions,
+	suggestionResults,
+  activeQuery  
+} from './queries'
+import {
+  auth
+} from './auth'
 
+import {
+  contactLists
+}from './contactLists'
 export default {
-  userSession,
+  anonymousUserSession,
   queries,
-  queryResults
+  queryResults,
+  querySuggestions,
+  suggestionResults,
+  activeQuery,
+  auth,
+  contactLists
 }
