@@ -5,13 +5,15 @@ import { ResultTable } from 'components/ResultTable'
 import { stopListeningForQueryResults, setActiveQuery } from 'actions/queries'
 import SearchBarContainer  from './SearchBarContainer';
 import Widget from 'components/Widget'
+import Switch from 'react-toggle-switch'
 import '../css/searchbar.less'
+import '../css/switch.less'
 class SearchContainer extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      queryType: 'hashtag',
+      queryType: null,
       hashtagSelected: false,
       influencerSelected: false,
       placeholder:''
@@ -70,23 +72,6 @@ class SearchContainer extends Component {
         default:
       }
     } 
-    const searchBarText = () => {
-      switch(this.state.queryType) {
-        case null:
-          return (
-            <p className='text-muted'>
-              Search by &nbsp; 
-               <strong>
-                 <span onClick={() => this.setState({queryType:'hashtag'})}>
-                  Hashtag </span>
-              </strong>
-              or <span onClick={() => this.setState({queryType:'influencer'})}><strong> influencer </strong></span>
-            </p>
-          )
-        default:
-          return <p className='text-muted'> You are currently searching by <strong>{this.state.queryType}</strong> Switch to <strong onClick={() => this.setState({queryType: getOppositeQueryType(this.state.queryType)})}> {getOppositeQueryType(this.state.queryType)}</strong> </p>
-      }
-    }
     if(result) {
       parsedCount = getSummary(result).parsedCount
       emails_found = getSummary(result).emails_found
@@ -96,7 +81,21 @@ class SearchContainer extends Component {
     return (
       <div id='searchContainer'>
         <div className='col-md-6'>
-          <Widget title={searchBarText()}texts={[]}>
+          <Widget texts={[]} title='select a query type'>
+            <div className='form-group'>
+              <label for='hashtagSwitch'>Hashtag</label> 
+              <Switch label='testing' on={this.state.queryType === 'hashtag'} id='hashtagSwitch' onClick={() => this.setState({
+                queryType: 'hashtag',
+                placeholder: 'startups'
+              })}/>
+            </div>
+            <div className='form-group'>
+              <label for='influencerSwitch'>Influencer</label>
+              <Switch label='testing' on={this.state.queryType === 'influencer'} id='hashtagSwitch' onClick={() => this.setState({
+                queryType: 'influencer',
+                placeholder: 'Gary Vee'
+              })}/>
+            </div>
             <SearchBarContainer
               className='search' 
               queryType={this.state.queryType} 
