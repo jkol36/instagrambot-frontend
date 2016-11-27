@@ -1,0 +1,34 @@
+// Color variables (appears count calculates by raw css)
+@color0: #cccccc; // Appears 2 times
+
+
+
+.switch {
+  border-radius:13px;
+  border:1px solid @color0;
+  cursor:pointer;
+  display:inline-block;
+  float:right;
+  height:26px;
+  width:50px;
+}
+.switch-toggle {
+  background:#ffffff;
+  border-radius:12px;
+  border:1px solid #999999;
+  box-shadow:1px 1px 1px @color0;
+  height:24px;
+  left:0;
+  position:relative;
+  transition:left .2s ease-in-out;
+  width:25px;
+}
+.switch.on {
+  background:green;
+  .switch-toggle {
+    left:23px;
+  }
+}
+.switch.disabled {
+  cursor:not-allowed;
+}
