@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { getSummary, getEmails} from 'helpers'
 import { ResultTable } from 'components/ResultTable'
-import { stopListeningForQueryResults, setActiveQuery } from 'actions/queries'
+import { stopListeningForQueryResults, setActiveQuery, listenForQueryResults } from 'actions/queries'
 import SearchBarContainer  from './SearchBarContainer';
 import Widget from 'components/Widget'
 import Switch from 'react-toggle-switch'
@@ -13,10 +13,10 @@ class SearchContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      queryType: null,
+      queryType: 'hashtag',
       hashtagSelected: false,
       influencerSelected: false,
-      placeholder:''
+      placeholder:'hashtag'
     }
     this.canRefresh = true
     this.shouldUpdate = false
@@ -58,11 +58,12 @@ class SearchContainer extends Component {
 
 
   render() {
+    console.log(this.props.activeQuery)
     let result = this.props.results ? this.props.results[this.props.activeQuery]: null
     let emails = []
     let parsedCount = 0
-    let emails_found = 0
-    let currentQuery = 'Your search term will appear here'
+    let emails_found = 0 
+    let activeQueries = this.props.query ? Object.keys(this.props.query).map(k => Object.assign({}, {id:k}, this.props.query[k])):[]
     const getOppositeQueryType = () => {
       switch(this.state.queryType) {
         case 'influencer':
@@ -80,7 +81,7 @@ class SearchContainer extends Component {
 
     return (
       <div id='searchContainer'>
-        <div className='col-md-6'>
+        <div className='col-md-4'>
           <Widget texts={[]} title='select a query type'>
             <div className='form-group'>
               <label for='hashtagSwitch'>Hashtag</label> 
@@ -103,8 +104,33 @@ class SearchContainer extends Component {
             />
           </Widget>
         </div>
-        <div className='col-md-6'> 
-          <Widget title={'Result Summary'} texts={[{label:'profiles parsed', value: parsedCount}, {label:'emails found', value:emails_found}, {label:'current query', value:currentQuery}]}/>
+        <div className='col-md-4'> 
+          <Widget title={'Result Summary'} texts={[{label:'profiles parsed', value: parsedCount}, {label:'emails found', value:emails_found}, {label:'Number of Active Queries', value:activeQueries.length}]}/>
+        </div>
+        <div className='col-md-4'> 
+          <Widget title='Your Active Queries' texts={[]}> 
+            {activeQueries.length === 0 ? 'None yet': 
+              <ul className='list-group'>
+              {activeQueries.map((query, index) => {
+              return (
+                <li className='list-group-item' key={index}>
+                  <div>
+                    <label htmlFor='queryType'>query type</label>
+                    <em> {query.queryType}</em>
+                  </div>
+                  <div>
+                    <label htmlFor='query'>query</label>
+                    <em> {query.query}</em>
+                    <div>
+                      <button className='btn btn-success' onClick={() => {this.props.dispatch(setActiveQuery(query.id), this.props.dispatch(listenForQueryResults(query.id, query.queryType)))}}> View Results </button>
+                    </div>
+                  </div>
+                </li>
+              )
+            })}
+            </ul>
+            } 
+          </Widget>
         </div>
         <div className='row'>
           <ResultTable headerRows={
