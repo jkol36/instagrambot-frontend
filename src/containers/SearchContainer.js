@@ -9,21 +9,24 @@ import Switch from 'react-toggle-switch'
 import '../css/searchbar.less'
 import '../css/switch.less'
 class SearchContainer extends Component {
-
+  //results is an object
+  //the result we want to see is accessible by this.props.results[this.props.activeQuery]
   constructor(props) {
     super(props)
     this.state = {
       queryType: 'hashtag',
       hashtagSelected: false,
       influencerSelected: false,
-      placeholder:'hashtag'
+      placeholder:'hashtag',
+      result: {},
     }
+    this.renderCalled = 0
     this.canRefresh = true
     this.shouldUpdate = false
     this.intervalTrigger = null
     this.clearResults = this.clearResults.bind(this)
-    this.updateResults = this.updateResults.bind(this)
-    this.tick = setTimeout(() => this.updateResults(), 1000)
+    this.checkForUpdates = this.checkForUpdates.bind(this)
+    this.tick = setTimeout(() => this.checkForUpdates(), 1000)
 
   }
 
@@ -38,16 +41,26 @@ class SearchContainer extends Component {
       }
     }
   }
-   updateResults() {
-    if(this.shouldUpdate) {
-      this.forceUpdate()
-      setTimeout(this.updateResults, 1000)
+   checkForUpdates() {
+    console.log('checking for updates')
+    console.log('render has been called', this.renderCalled)
+    if(this.props.activeQuery) {
+      let result = this.props.queryResults[this.props.activeQuery]
+      for(let key in result) {
+        if(this.state.result[key] === undefined || this.state.result[key] !== result[key]) {
+          this.state.result[key] = result[key]
+          this.setState({
+            result: this.state.result
+          })
+        }
+      }
     }
-    return
+    return setTimeout(() => this.checkForUpdates(), 1000)
   }
   componentWillUnmount() {
     this.shouldUpdate = false
   }
+  
   clearResults() {
     const {dispatch, queryType, activeQuery} = this.props
     dispatch(stopListeningForQueryResults(activeQuery, queryType))
@@ -58,8 +71,7 @@ class SearchContainer extends Component {
 
 
   render() {
-    console.log(this.props.activeQuery)
-    let result = this.props.results ? this.props.results[this.props.activeQuery]: null
+    this.renderCalled +=1
     let emails = []
     let parsedCount = 0
     let emails_found = 0 
@@ -73,10 +85,10 @@ class SearchContainer extends Component {
         default:
       }
     } 
-    if(result) {
-      parsedCount = getSummary(result).parsedCount
-      emails_found = getSummary(result).emails_found
-      emails = getEmails(result)
+    if(this.state.result) {
+      parsedCount = getSummary(this.state.result).parsedCount
+      emails_found = getSummary(this.state.result).emails_found
+      emails = getEmails(this.state.result)
     }
 
     return (
@@ -169,7 +181,7 @@ export default connect(state => {
     auth: state.auth,
     query: state.queries,
     activeQuery: state.activeQuery,
-    results: state.queryResults
+    queryResults:state.queryResults
   }
 })(SearchContainer)
 
