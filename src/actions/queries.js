@@ -36,21 +36,21 @@ export const queryResultAdded = (key, val, queryId) => (dispatch) => {
 		queryId
 	})
 }
+//the sessionId will be a users uid to map a user to a array of queries, or a anonymousSessionId to map a 
+//anonymous user session to an array of queries.
 export const queryAdded = (query, queryType, sessionId) => (dispatch) => {
 	console.log('query added called with', query, queryType, sessionId)
 	return new Promise((resolve) => {
-		let newQueryRef = queryRef.push()
+		let newQueryRef = queryRef.child(sessionId).push()
 	  newQueryRef.set({
-	    query: {
-	      type: queryType,
-	      query,
-	      id: newQueryRef.key,
-	      sessionId,
-	      status: 0
-	    }
-	  })
+	     type: queryType,
+	     query,
+	     id: newQueryRef.key,
+	     status: 0
+	   })
 	  dispatch({
 	  	type: QUERY_ADDED,
+	  	sessionId,
 	  	queryId: newQueryRef.key,
 	  	data: {
 	  		query,
@@ -121,6 +121,7 @@ export const listenForQueryResults = (queryId, queryType) => (dispatch) => {
       })
     case 'hashtag':
       return hashtagRef.child(queryId).on('child_added', snap => {
+      	console.log('hashtag added to the hashtag ref', snap.val())
         dispatch(queryResultAdded(snap.key, snap.val(), queryId))
           hashtagRef.child(queryId).on('child_changed', snap => {
 	        dispatch(queryResultAdded(snap.key, snap.val(), queryId))

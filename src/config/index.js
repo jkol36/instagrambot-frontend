@@ -7,7 +7,7 @@ firebase.initializeApp({
     messagingSenderId: '954403116289'
 })
 global.Promise = require('bluebird')
-const currentVersion = 'v1'
+const currentVersion = 'test'
 export const contactListRef = firebase.database().ref(`igbot/${currentVersion}/contactLists`)
 export const userRef = firebase.database().ref(`igbot/${currentVersion}/users`)
 export const queryRef = firebase.database().ref(`igbot/${currentVersion}/queries`)

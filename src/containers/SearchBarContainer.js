@@ -25,6 +25,9 @@ class SearchBarContainer extends Component {
       suggestionResultRef:null,
     }
   }
+  componentWillMount() {
+    console.log('searchbar container mounting', this.props)
+  }
   onChange(e) {
     console.log(this.props.queryType)
     console.log('on change called', e.target.value)
@@ -77,14 +80,15 @@ class SearchBarContainer extends Component {
 
   onSearch(query) {
     console.log('on search called with', query)
-    let { queryType, activeQuery } = this.props
+    let { queryType, activeQuery, userSession, auth } = this.props
     this.clearSuggestions()
     const { dispatch } = this.props
+    let queryId = auth.uid ? auth.uid: userSession
     if(activeQuery) {
       dispatch(stopListeningForQueryResults(activeQuery, queryType))
     }
 
-    dispatch(queryAdded(query, queryType, this.props.userSession))
+    dispatch(queryAdded(query, queryType, queryId))
     .then(queryId => {
       dispatch(listenForQueryResults(queryId, queryType))
       dispatch(setActiveQuery(queryId))
@@ -120,9 +124,10 @@ class SearchBarContainer extends Component {
 
 export default connect(state => {
   return {
+    auth: state.auth,
     querySuggestions:state.querySuggestions,
     querySuggestionResults: state.suggestionResults,
     activeQuery: state.activeQuery,
-    userSession: state.anonymousUserSession ? state.anonymousUserSession: state.user.uid
+    userSession: state.anonymousUserSession
   }
 })(SearchBarContainer)
