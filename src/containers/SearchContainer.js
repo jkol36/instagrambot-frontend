@@ -84,14 +84,14 @@ class SearchContainer extends Component {
         <div className='col-md-4'>
           <Widget texts={[]} title='select a query type'>
             <div className='form-group'>
-              <label for='hashtagSwitch'>Hashtag</label> 
+              <label htmlFor='hashtagSwitch'>Hashtag</label> 
               <Switch label='testing' on={this.state.queryType === 'hashtag'} id='hashtagSwitch' onClick={() => this.setState({
                 queryType: 'hashtag',
                 placeholder: 'startups'
               })}/>
             </div>
             <div className='form-group'>
-              <label for='influencerSwitch'>Influencer</label>
+              <label htmlFor='influencerSwitch'>Influencer</label>
               <Switch label='testing' on={this.state.queryType === 'influencer'} id='hashtagSwitch' onClick={() => this.setState({
                 queryType: 'influencer',
                 placeholder: 'Gary Vee'
