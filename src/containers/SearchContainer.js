@@ -31,7 +31,6 @@ class SearchContainer extends Component {
   }
 
   componentWillMount() {
-    console.log('dashboard will mount')
     this.shouldUpdate = true
     const {location} = this.props
     if(location.action === 'PUSH') {
@@ -42,8 +41,6 @@ class SearchContainer extends Component {
     }
   }
    checkForUpdates() {
-    console.log('checking for updates')
-    console.log('render has been called', this.renderCalled)
     if(this.props.activeQuery) {
       let result = this.props.queryResults[this.props.activeQuery]
       for(let key in result) {
