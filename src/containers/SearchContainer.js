@@ -1,13 +1,15 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
 import { getSummary, getEmails} from 'helpers'
 import { ResultTable } from 'components/ResultTable'
 import { stopListeningForQueryResults, setActiveQuery, listenForQueryResults } from 'actions/queries'
-import SearchBarContainer  from './SearchBarContainer';
+import SearchBarContainer  from './SearchBarContainer'
+import ExportComponent from 'components/ExportComponent'
 import Widget from 'components/Widget'
 import Switch from 'react-toggle-switch'
 import '../css/searchbar.less'
 import '../css/switch.less'
+
 class SearchContainer extends Component {
   //results is an object
   //the result we want to see is accessible by this.props.results[this.props.activeQuery]
@@ -70,9 +72,38 @@ class SearchContainer extends Component {
   render() {
     this.renderCalled +=1
     let emails = []
+    let emailsForExport
     let parsedCount = 0
     let emails_found = 0 
     let activeQueries = this.props.query ? Object.keys(this.props.query).map(k => Object.assign({}, {id:k}, this.props.query[k])):[]
+    const buildCSVData = (emails) => {
+      const columns = [{
+        'id': 'InstagramUsername',
+        'displayText': 'Instagram Username',
+      }, {
+        'id': 'Followers',
+        'displayText': 'Followers'
+      },
+      {
+        'id': 'fullName',
+        'displayText': 'Full Name'
+      }, {
+        'id': 'Email',
+        'displayText': 'Email'
+      }]
+      const data = emails.map((email, index) => {
+        return {
+          'InstagramUsername': email.username,
+          'Followers': email.metaData.user.followed_by.count,
+          'fullName': email.metaData.user.full_name,
+          'Email': email.email,
+        }
+      })
+      return {
+        columns,
+        data
+      }
+    }
     const getOppositeQueryType = () => {
       switch(this.state.queryType) {
         case 'influencer':
@@ -86,6 +117,9 @@ class SearchContainer extends Component {
       parsedCount = getSummary(this.state.result).parsedCount
       emails_found = getSummary(this.state.result).emails_found
       emails = getEmails(this.state.result)
+      emailsForExport = buildCSVData(emails)
+
+
     }
 
     return (
@@ -142,6 +176,12 @@ class SearchContainer extends Component {
           </Widget>
         </div>
         <div className='row'>
+          <ExportComponent 
+            data={emailsForExport.data} 
+            columns={emailsForExport.columns}
+            filename={'testing'}
+            header='For # startups'
+          />
           <ResultTable headerRows={
               [
                 {text:'Profile Pic'}, 
@@ -167,7 +207,6 @@ class SearchContainer extends Component {
               }).splice(0,10)}
             </ResultTable>
         </div>
-
       </div>
     )
   }

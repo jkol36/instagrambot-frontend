@@ -6,6 +6,7 @@ import SigninComponent from 'components/SigninComponent';
 import SignupComponent from 'components/SignupComponent';
 import ContactListContainer from 'containers/ContactListContainer';
 import _AuthContainer from '../containers/_AuthContainer';
+import ExportComponent from 'components/ExportComponent';
 import App from '../containers/app'
 
 
@@ -14,6 +15,7 @@ import App from '../containers/app'
 export default () => [
   (<Route path='/' component={_AuthContainer} key='auth-container'>
     <IndexRedirect to='/landing'/>
+    <Route path='/export' component={ExportComponent} />
     <Route path='/landing' component={LandingComponent} />
     <Route path='/signin' component={SigninComponent} />
     <Route path='/signup' component={SignupComponent} />
