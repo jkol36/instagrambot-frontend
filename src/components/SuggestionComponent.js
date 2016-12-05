@@ -53,7 +53,6 @@ class SuggestionComponent extends Component {
 		super(props)
 	}
 	render() {
-		console.log(this.props.suggestions, this.props.queryType)
 		return (
 			<ul className='search-bar-suggestions'> 
 				{this.props.suggestions.map((suggestion, index) => {
@@ -69,7 +68,6 @@ class SuggestionComponent extends Component {
 						className={suggestion.className}/>
 					}
 					else if(this.props.queryType === 'hashtag') {
-						console.log(suggestion)
 						return <SuggestionItem
 						key={index}
 						onClick={this.props.onSelectedSuggestion}

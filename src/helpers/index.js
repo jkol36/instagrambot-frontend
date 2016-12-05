@@ -19,3 +19,11 @@ export const getSummary = (result) => {
   return {parsedCount, emails_found}
 }
 
+export const pathNameToIcon = (pathname) => {
+  switch (pathname) {
+    case 'search':
+      return 'fa fa-search'
+    default:
+      return ''
+  }
+}

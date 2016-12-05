@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { newUser } from 'actions/auth'
 import firebase from 'firebase'
+import {connect} from 'react-redux'
 
-export default class SignupComponent extends Component {
+class SignupComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -71,7 +72,7 @@ export default class SignupComponent extends Component {
       <section className="cta-form cta-light section-spacing">
         <div className="container">
           <div className="row">
-            <div className="col-sm-8 col-md-5 center-block">
+            <div className="col-sm-4 col-sm-offset-4">
               <form id="cta-signin-form" className="cta-signin-form">
                 <header className="section-header text-center">
                   <h2>Sign Up</h2>
@@ -101,3 +102,5 @@ export default class SignupComponent extends Component {
     )
   }
 }
+
+export default connect(state => state)(SignupComponent)

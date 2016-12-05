@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 
 export const ResultTable = (props) => {
   return (
-    <table className='table table-striped'> 
+    <table className='table table-striped table-condensed'> 
       <thead className='thead-inverse'> 
         <tr>
           {props.headerRows.map((row, index) => {

@@ -1,22 +1,38 @@
 import React, {PropTypes} from 'react';
-import 'css/widget.less'
 
 const Widget = (props) => (
-  <div className='card'> 
-    <div className='card card-block'>
-      <h4 className='card-title'> {props.title} </h4>
-      {props.texts.map((text, index) => {
-        return <p key={index} className='card-text'> <span className='label'>{text.label}</span>: <span className='value'>{text.value}</span></p>
-      })}
-      {props.children}
+    <div className='widget'>
+      <div className={`widget-header bg-${props.color}`}>
+        <i className={`widget-icon fa fa-${props.icon}`}/>
+        <span className='widget-caption'> {props.caption} </span>
+        <div className='widget-buttons'>
+          {!props.widgetHeaderButtons ? null: props.widgetHeaderButtons.map((button, index) => {
+            return (
+              <a href={button.link} key={index} onClick={button.onClick} data-toggle={button.dataToggle}>
+                <i data-tip={button.dataTip} className={`fa fa-${button.icon}`}></i>
+              </a>
+            )
+          })}
+        </div>
+      </div>
+      <div className='widget-body'> 
+        {props.children}
+      </div>
     </div>
-  </div>
 )
 
 Widget.propTypes = {
-  title: PropTypes.string,
+  widgetHeaderButtons: PropTypes.array,
+  widgetButton: PropTypes.object,
+  widgetButtonLink: PropTypes.string,
+  widgetButtonDataToggle: PropTypes.string,
+  widgetButtonIcon:PropTypes.string,
+  buttonOnClick:PropTypes.onClick,
+  buttonDataTip:PropTypes.string,
+  icon: PropTypes.string,
+  color: PropTypes.string,
   texts: PropTypes.array,
-  label: PropTypes.string,
+  caption: PropTypes.string,
   value: PropTypes.string
 }
 

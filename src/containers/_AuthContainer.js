@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { routeActions } from 'react-router-redux'
-import { fetchUser, loginSuccess } from 'actions/auth'
+import { routeActions, replace } from 'react-router-redux'
+import { fetchUser, saveUserInStore, loginSuccess } from 'actions/auth'
 import LoadingComponent from 'components/LoadingComponent'
 import { createAnonymousUserSession } from 'actions/anonymousUser'
 import firebase from 'firebase'
@@ -10,13 +10,8 @@ class _AuthContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: true
+      loading: true,
     }
-  }
-
-  componentWillMount() {
-    console.log('auth container mounting')
-    console.log(this.props)
   }
 
   componentDidMount() {
@@ -51,12 +46,14 @@ class _AuthContainer extends Component {
   }
 
   render() {
-    if(this.state.loading) {
-      return (<LoadingComponent />)
+    if(this.state.loading && !this.props.auth.user && this.props.location.pathname != 'signup' && this.props.location.pathname != 'signin') {
+      console.log('loading')
+      return <LoadingComponent />
     }
     return (
-      <div className='container-fluid'>
-        { React.cloneElement(this.props.children, {store: this.props.store}) }
+      <div id='content'>
+        <LoadingComponent />
+        { React.cloneElement(this.props.children, {store: this.props.store, user:this.props.auth.user},) }
       </div>
     )
   }

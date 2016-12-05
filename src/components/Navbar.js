@@ -1,40 +1,67 @@
 import React from 'react';
-import 'css/navbar.less'
 import { Link } from 'react-router'
 import firebase from 'firebase'
+import {connect} from 'react-redux'
 
-const Navbar = (props) => {
+
+const NavbarBrand = (props) => {
 	return (
-		<header className='navbar'>
-		  <a className="navbar-brand" href="#">
-		  	<img src='static/img/dog-logo-blue.png' width='60'></img>
-		  </a>
-		  <ul className='nav nav-pills float-xs-right'> 
-		  	{props.navLinks.map((link, index) => {
-		  		let onClick = () => {
-		  			return props.handleNavLinkChange(index)
-		  		}
-		  		let selected = props.selected === index ? 'active': ''
-		  		return (
-		  			<li className='nav-item' onClick={onClick} key={index}> 
-		  				<Link className={`${'nav-link ' + selected}`} to={link.href}><i className={link.icon}></i>{link.text}</Link> 
-		  			</li>)
-		  	})}
-		  	<li className='nav-item'>
-			  	<div className="dropdown">
-					  <a className="nav-link" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					   <i className='fa fa-user' id='user-icon'></i>
-					   {props.user.firstName} {props.user.lastName}
-					   <i className='fa fa-caret-down'></i>
-					  </a>
-					  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-					  	<a className='dropdown-item' href='#'>Free Plan</a>
-					    <a className="dropdown-item" href="#" onClick={() => firebase.auth().signOut()}>Logout</a>
-					  </div>
-					</div>
-				</li>
-		  </ul>
-		</header>
+		<div className='navbar-header pull-left'>
+			<a href='#' className='navbar-brand'>
+				<small>
+					<img src='assets/img/fetchmate-logo-white.png'></img>
+				</small>
+			</a>
+			{props.children}
+		</div>
 	)
 }
-export default Navbar
+
+const NavbarHeaderRight = (props) => {
+	return (
+	  <div className="navbar-header pull-right">
+		  <div className='navbar-account'>
+		  	<ul className='account-area'>
+		  		<li>
+		        <a className="login-area dropdown-toggle" data-toggle="dropdown">
+		          <div className='avatar'>
+		          	<img src='assets/img/avatar.jpg'/>
+			         </div>
+		          <section>
+		              <h2><span className="profile"><span>{props.name ? props.name: ''}</span></span></h2>
+		          </section>
+		        </a>
+		        <ul className='pull-right dropdown-menu dropdown-arrow dropdown-login-area'>
+		        	<li className='dropdown-footer'> 
+		        		<a href='#' onClick={() => firebase.auth().signOut()} > Logout </a>
+		        	</li>
+		        </ul>
+	        </li>
+	      </ul>
+	  	</div>
+	  </div>
+
+	);
+}
+class Navbar extends React.Component {
+	constructor(props) {
+		super(props)
+	}
+	render() {
+		if(this.props.auth.user === null) {
+			return (<div> </div>)
+		}
+		else {
+			return (
+				<div className="navbar">
+			    <div className="navbar-inner">
+			       <NavbarBrand />
+			       <NavbarHeaderRight name={this.props.auth.user.firstName + ' ' + this.props.auth.user.lastName}  /> 
+			    </div>
+				</div>
+		)
+		}
+	}
+}
+
+export default connect(state => state)(Navbar)

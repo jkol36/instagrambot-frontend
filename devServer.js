@@ -19,16 +19,10 @@ app.use(require('webpack-dev-middleware')(compiler, {
 
 app.use(require('webpack-hot-middleware')(compiler));
 
-app.use('/static', express.static(path.join(__dirname, 'public/static')))
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')))
 
 app.get('/landing', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public/landing.html'))
-})
-app.get('/signin', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public/signin.html'))
-})
-app.get('/signup', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public/signin.html'))
+  res.redirect('http://localhost:8000')
 })
 
 app.get('*', function(req, res) {

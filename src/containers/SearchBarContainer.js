@@ -23,14 +23,15 @@ class SearchBarContainer extends Component {
       query: '',
       selectedSuggesstion: null,
       suggestionResultRef:null,
+      currentQueryId: null
     }
   }
-  componentWillMount() {
-    console.log('searchbar container mounting', this.props)
+  componentWillUnMount() {
+    if(this.state.currentQueryId) {
+      dispatch(stopListeningForQueryResults(this.state.currentQueryId))
+    }
   }
   onChange(e) {
-    console.log(this.props.queryType)
-    console.log('on change called', e.target.value)
     const { dispatch } = this.props
     if(e.target.value.length === 0 && this.state.suggestionResultRef != null) {
       dispatch(clearSuggestionResults(this.state.suggestionResultRef))
@@ -49,7 +50,6 @@ class SearchBarContainer extends Component {
       else {
         queryForLookup = e.target.value.trim()
       }
-      console.log(queryForLookup)
       this.setState({query:e.target.value})
       dispatch(suggestionAdded(queryForLookup, this.props.queryType))
       .then(ref => {
@@ -63,7 +63,6 @@ class SearchBarContainer extends Component {
   }
 
   onSelectedSuggestion(name) {
-    console.log('selectedSuggesstion called with', name)
     this.setState({
       query: name,
       selectedSuggestion: name
@@ -79,19 +78,16 @@ class SearchBarContainer extends Component {
   }
 
   onSearch(query) {
-    console.log('on search called with', query)
-    let { queryType, activeQuery, userSession, auth } = this.props
+    let { queryType, activeQuery, userSession, auth, handleResult } = this.props
     this.clearSuggestions()
     const { dispatch } = this.props
-    let queryId = auth.uid ? auth.uid: userSession
-    if(activeQuery) {
-      dispatch(stopListeningForQueryResults(activeQuery, queryType))
-    }
-
-    dispatch(queryAdded(query, queryType, queryId))
+    let sessionId = auth.user.uid ? auth.user.uid: userSession
+    dispatch(queryAdded(query, queryType, sessionId))
     .then(queryId => {
-      dispatch(listenForQueryResults(queryId, queryType))
-      dispatch(setActiveQuery(queryId))
+      dispatch(listenForQueryResults(queryId, queryType, query, handleResult))
+      this.setState({
+        currentQueryId: queryId
+      })
     })
     
   }
@@ -118,6 +114,7 @@ class SearchBarContainer extends Component {
           </div>
         </form>
       </div>
+           
     )
   }
 }
@@ -126,7 +123,7 @@ export default connect(state => {
   return {
     auth: state.auth,
     querySuggestions:state.querySuggestions,
-    querySuggestionResults: state.suggestionResults,
+    querySuggestionResults: state.suggestionResults.slice(0,10),
     activeQuery: state.activeQuery,
     userSession: state.anonymousUserSession
   }
