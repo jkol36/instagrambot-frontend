@@ -4,11 +4,12 @@ import { getSummary, getEmails} from 'helpers'
 import { ResultTable } from 'components/ResultTable'
 import { stopListeningForQueryResults, setActiveQuery, listenForQueryResults } from 'actions/queries'
 import SearchBarContainer  from './SearchBarContainer'
-import ExportComponent from 'components/ExportComponent'
+import csv from '../lib/csv'
+import StatComponent from 'components/StatComponent'
 import Widget from 'components/Widget'
 import Switch from 'react-toggle-switch'
-import '../css/searchbar.less'
-import '../css/switch.less'
+import ReactTooltip from 'react-tooltip'
+import 'css/switch.less'
 
 class SearchContainer extends Component {
   //results is an object
@@ -27,57 +28,41 @@ class SearchContainer extends Component {
     this.shouldUpdate = false
     this.intervalTrigger = null
     this.clearResults = this.clearResults.bind(this)
-    this.checkForUpdates = this.checkForUpdates.bind(this)
-    this.tick = setTimeout(() => this.checkForUpdates(), 1000)
+    this.handleResult = this.handleResult.bind(this)
+    this.downloadCSV = this.downloadCSV.bind(this)
+    this.buildCSVData = this.buildCSVData.bind(this)
 
   }
 
   componentWillMount() {
-    this.shouldUpdate = true
-    const {location} = this.props
-    if(location.action === 'PUSH') {
-      if(this.canRefresh) {
-        this.canRefresh = false
-        window.location.reload()
-      }
-    }
+    console.log('search container mounting got user', this.props.auth.user)
+
   }
-   checkForUpdates() {
-    if(this.props.activeQuery) {
-      let result = this.props.queryResults[this.props.activeQuery]
-      for(let key in result) {
-        if(this.state.result[key] === undefined || this.state.result[key] !== result[key]) {
-          this.state.result[key] = result[key]
-          this.setState({
-            result: this.state.result
-          })
-        }
-      }
-    }
-    return setTimeout(() => this.checkForUpdates(), 1000)
+  downloadCSV() {
+    let {columns, data} = this.buildCSVData(getEmails(this.state.result))
+    console.log(columns)
+    let csvFile = csv(columns, data, ' | ')
+    let filename = `${this.state.result.query}.csv`
+    const a = document.createElement('a');
+    let bomCode = '%EF%BB%BF';
+    a.textContent = 'download';
+    a.download = filename;
+    a.href = `data:text/csv;charset=utf-8,${bomCode}${encodeURIComponent(csvFile)}`;
+    a.click();
   }
-  componentWillUnmount() {
-    this.shouldUpdate = false
-  }
-  
   clearResults() {
-    const {dispatch, queryType, activeQuery} = this.props
-    dispatch(stopListeningForQueryResults(activeQuery, queryType))
-    dispatch(setActiveQuery(null))
+    this.setState({
+      result: {}
+    })
   }
-
-
-
-
-  render() {
-    this.renderCalled +=1
-    let emails = []
-    let emailsForExport
-    let parsedCount = 0
-    let emails_found = 0 
-    let activeQueries = this.props.query ? Object.keys(this.props.query).map(k => Object.assign({}, {id:k}, this.props.query[k])):[]
-    const buildCSVData = (emails) => {
-      const columns = [{
+  handleResult(key, val, id, query) {
+    this.setState({
+      result: Object.assign({}, this.state.result, {[key]:val}, {id}, {query})
+    })
+  }
+  buildCSVData(emails){
+    console.log('buildCSVData', emails)
+    const columns = [{
         'id': 'InstagramUsername',
         'displayText': 'Instagram Username',
       }, {
@@ -103,7 +88,18 @@ class SearchContainer extends Component {
         columns,
         data
       }
-    }
+  }
+      
+
+
+
+  render() {
+    let emails = []
+    let emailsForExport
+    let parsedCount = 0
+    let emails_found = 0
+    let activeQuery = 'Nothing yet' 
+    //let activeQueries = this.props.query ? Object.keys(this.props.query).map(k => Object.assign({}, {id:k}, this.props.query[k])):[]
     const getOppositeQueryType = () => {
       switch(this.state.queryType) {
         case 'influencer':
@@ -113,76 +109,71 @@ class SearchContainer extends Component {
         default:
       }
     } 
-    if(this.state.result) {
+    if(Object.keys(this.state.result).length > 0) {
       parsedCount = getSummary(this.state.result).parsedCount
       emails_found = getSummary(this.state.result).emails_found
       emails = getEmails(this.state.result)
-      emailsForExport = buildCSVData(emails)
-
-
+      //activeQuery = this.state.result.hashtag.query
     }
 
     return (
       <div id='searchContainer'>
-        <div className='col-md-4'>
-          <Widget texts={[]} title='select a query type'>
-            <div className='form-group'>
-              <label htmlFor='hashtagSwitch'>Hashtag</label> 
-              <Switch label='testing' on={this.state.queryType === 'hashtag'} id='hashtagSwitch' onClick={() => this.setState({
-                queryType: 'hashtag',
-                placeholder: 'startups'
-              })}/>
-            </div>
+        <div className='row'> 
+          <div className='col-md-12 col-lg-12 text-center'> 
+            <h4> Showing results for {this.state.result.query} </h4>
+          </div>
+        </div>
+        <div className='row stats'>
+          <div className='col-md-6'>
+            <StatComponent color='pink' title='Profiles Visited' value={parsedCount ? parsedCount: 0}/>
+          </div>
+          <div className='col-md-6'>
+            <StatComponent color='blue' title='emails found' value={emails_found ? emails_found: 0}/>
+          </div>
+        </div> 
+        <div className='row'>
+          <div className='col-md-12 col-lg-12'>
+            <Widget
+              title='Search for emails'
+              widgetHeaderButtons={[]}
+              icon='search'
+              color='green'
+              caption='Search for emails by Hashtag or Influencer'
+              >
+              <div className='form-group'>
+                <label htmlFor='hashtagSwitch'>Hashtag</label> 
+                <Switch label='testing' on={this.state.queryType === 'hashtag'} id='hashtagSwitch' onClick={() => this.setState({
+                  queryType: 'hashtag',
+                  placeholder: 'startups'
+                })}/>
+              </div>
             <div className='form-group'>
               <label htmlFor='influencerSwitch'>Influencer</label>
-              <Switch label='testing' on={this.state.queryType === 'influencer'} id='hashtagSwitch' onClick={() => this.setState({
-                queryType: 'influencer',
-                placeholder: 'Gary Vee'
-              })}/>
+                <Switch label='testing' on={this.state.queryType === 'influencer'} id='hashtagSwitch' onClick={() => this.setState({
+                  queryType: 'influencer',
+                  placeholder: 'Gary Vee'
+                })}/>
             </div>
-            <SearchBarContainer
-              className='search' 
-              queryType={this.state.queryType} 
-              placeholder={this.state.placeholder}
-            />
-          </Widget>
-        </div>
-        <div className='col-md-4'> 
-          <Widget title={'Result Summary'} texts={[{label:'profiles parsed', value: parsedCount}, {label:'emails found', value:emails_found}, {label:'Number of Active Queries', value:activeQueries.length}]}/>
-        </div>
-        <div className='col-md-4'> 
-          <Widget title='Your Active Queries' texts={[]}> 
-            {activeQueries.length === 0 ? 'None yet': 
-              <ul className='list-group'>
-              {activeQueries.map((query, index) => {
-              return (
-                <li className='list-group-item' key={index}>
-                  <div>
-                    <label htmlFor='queryType'>query type</label>
-                    <em> {query.queryType}</em>
-                  </div>
-                  <div>
-                    <label htmlFor='query'>query</label>
-                    <em> {query.query}</em>
-                    <div>
-                      <button className='btn btn-success' onClick={() => {this.props.dispatch(setActiveQuery(query.id), this.props.dispatch(listenForQueryResults(query.id, query.queryType)))}}> View Results </button>
-                    </div>
-                  </div>
-                </li>
-              )
-            })}
-            </ul>
-            } 
-          </Widget>
+              <SearchBarContainer 
+                className='search'
+                queryType={this.state.queryType}
+                placeholder={this.state.placeholder}
+                handleResult = {this.handleResult}
+              /> 
+            </Widget>
+          </div>
         </div>
         <div className='row'>
-          <ExportComponent 
-            data={emailsForExport.data} 
-            columns={emailsForExport.columns}
-            filename={'testing'}
-            header='For # startups'
-          />
-          <ResultTable headerRows={
+          <div className='col-md-12 col-lg-12'>
+            <ReactTooltip />
+              <Widget
+                widgetHeaderButtons={[{icon:'download', onClick:this.downloadCSV, dataTip:'Download results as CSV'}]}
+                title='Emails'
+                icon='email'
+                color='blue'
+                caption='Emails found will appear here'
+              >
+               <ResultTable headerRows={
               [
                 {text:'Profile Pic'}, 
                 {text:'Username'}, 
@@ -194,7 +185,7 @@ class SearchContainer extends Component {
                 return (
                   <tr key={index}> 
                     <td> 
-                      <img src={email.metaData.user.profile_pic_url}></img>
+                      <img width='20' src={email.metaData.user.profile_pic_url}></img>
                     </td>
                     <td> 
                       {email.username}
@@ -204,10 +195,12 @@ class SearchContainer extends Component {
                     <td> {email.metaData.user.full_name} </td>
                   </tr>
                 )
-              }).splice(0,10)}
+              })}
             </ResultTable>
+          </Widget>
         </div>
       </div>
+    </div>
     )
   }
 }

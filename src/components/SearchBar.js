@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import SuggestionComponent from './SuggestionComponent'
+import 'css/searchbar.less'
 
 
 const SearchBar = (props) => {

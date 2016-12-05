@@ -35,10 +35,10 @@ export default class SigninComponent extends Component {
   }
   render() {
     return (
-      <section className="cta-form cta-light section-spacing">
+      <section id='signin-container' className="cta-form cta-light section-spacing">
         <div className="container">
           <div className="row">
-            <div className="col-sm-8 col-md-5 center-block">
+            <div className="col-sm-4 col-sm-offset-4">
               <form id="cta-signin-form" className="cta-signin-form">
                 <header className="section-header text-center">
                   <h2>Sign In</h2>

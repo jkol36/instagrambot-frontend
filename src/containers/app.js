@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Navbar from 'components/Navbar'
-import 'css/app.less'
+import Sidebar from 'components/Sidebar'
+import PageHeader from 'components/PageHeader'
+import BreadCrumb from 'components/BreadCrumb'
 
 class App extends Component {
   constructor(props) {
@@ -10,35 +12,29 @@ class App extends Component {
       selectedRoute:0,
       loading:true
     }
-    this.handleNavLinkChange = this.handleNavLinkChange.bind(this)
   }
-  componentWillMount() {
-    console.log('app.js will mount')
-  }
-  componentDidMount() {
-    console.log('app.js mounted')
-  }
-  handleNavLinkChange(selectedRoute) {
-    this.setState({
-      selectedRoute
-    })
-
-  }
+  //fetch all user queries
+  //fetch all user contacts
 
   render() {
-    let navLinks = [{href:'/search', text:'Search', icon:'fa fa-search'}, {href:'/contact-lists', text:'contact lists', icon:'fa fa-address-book'}]
+    //let navLinks = [{href:'/search', text:'Search', icon:'fa fa-search'}, {href:'/contact-lists', text:'contact lists', icon:'fa fa-address-book'}]
     return (
-      <div id='page-wrapper'>
-        <Navbar navLinks={navLinks} user={this.props.auth.user} selected={this.state.selectedRoute} handleNavLinkChange={this.handleNavLinkChange} />
-        <div id='content-wrapper'>
-          <div className='content'>
-            {React.cloneElement(this.props.children, {store:this.props.store})}
+      <div>
+        <Navbar />
+        <div className="main-container container-fluid">
+          <div className="page-container">
+            <Sidebar />
+            <div className='page-content'>
+              <BreadCrumb />
+              <PageHeader title={this.props.location.pathname.split('/')[1]} />
+            <div className='page-body'>
+              {React.cloneElement(this.props.children, {store:this.props.store, user:this.props.auth})}
+            </div>
           </div>
         </div>
-
       </div>
-
-    )
+    </div>
+    );
   }
 }
 

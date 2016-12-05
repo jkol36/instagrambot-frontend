@@ -108,24 +108,22 @@ export const listenForSuggestionResults = (ref) => (dispatch) => {
 	})
 }
 
-export const listenForQueryResults = (queryId, queryType) => (dispatch) => {
-	console.log('listening for results for query id', queryId)
+export const listenForQueryResults = (queryId, queryType, query, callback) => (dispatch) => {
 	switch(queryType) {
     case 'influencer':
-    	console.log('should listen to influencer endpoint')
       return influencerRef.child(queryId).on('child_changed', snap => {
-        dispatch(queryResultChanged(snap.key, snap.val(), queryId))
-	        influencerRef.child(queryId).on('child_added', snap => {
-	        dispatch(queryResultChanged(snap.key, snap.val(), queryId))
-	      })
+        callback(snap.key, snap.val(), queryId, query)
+        influencerRef.child(queryId).on('child_added', snap => {
+        	callback(snap.key, snap.val(), queryId, query)
+        })
       })
     case 'hashtag':
+    console.log('got hashtag')
       return hashtagRef.child(queryId).on('child_added', snap => {
-      	console.log('hashtag added to the hashtag ref', snap.val())
-        dispatch(queryResultAdded(snap.key, snap.val(), queryId))
-          hashtagRef.child(queryId).on('child_changed', snap => {
-	        dispatch(queryResultAdded(snap.key, snap.val(), queryId))
-	      })
+        callback(snap.key, snap.val(), queryId, query)
+        hashtagRef.child(queryId).on('child_changed', snap => {
+        	callback(snap.key, snap.val(), queryId, query)
+        })
       })
   }
 }
