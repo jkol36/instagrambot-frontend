@@ -15,7 +15,7 @@ const StatComponent = (props) => {
 
 StatComponent.propTypes = {
   color: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.number,
   title: PropTypes.string
 }
 

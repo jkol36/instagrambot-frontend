@@ -27,7 +27,6 @@ Widget.propTypes = {
   widgetButtonLink: PropTypes.string,
   widgetButtonDataToggle: PropTypes.string,
   widgetButtonIcon:PropTypes.string,
-  buttonOnClick:PropTypes.onClick,
   buttonDataTip:PropTypes.string,
   icon: PropTypes.string,
   color: PropTypes.string,
